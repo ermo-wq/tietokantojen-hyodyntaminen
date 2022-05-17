@@ -1,6 +1,5 @@
-﻿using System;
+﻿using System.Data;
 using Autokauppa.Model;
-using System.Windows.Forms;
 using System.Collections.Generic;
 
 namespace Autokauppa.Controller {
@@ -37,8 +36,8 @@ namespace Autokauppa.Controller {
             return DatabaseController.TestConnection();
         }
 
-        public static void ShowAllRecords(DataGridView dataGrid, int record) {
-            ViewController.GetAllRecords(dataGrid, record);
+        public static DataSet ShowAllRecords(int record) {
+            return ViewController.GetAllRecords(record);
         }
 
         public static Car AssignProperties(List<string> comboBoxData, List<string> dataForRecord) {
