@@ -4,31 +4,101 @@ using System.Data.SqlClient;
 using System.Collections.Generic;
 
 namespace Autokauppa.model {
-    public class DataLoader {
-        readonly static string connectionString = @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=Autokauppa;Integrated Security=True;";
+    public static class DatabaseController {
+        readonly public static string connectionString = @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=Autokauppa;Integrated Security=True;";
 
-        public List<Property> LoadProperty(string sqlExpression, Property prop) {           // returns the collection of objects of each property
-            List<Property> properties = new();                                              // each object corresponds to each row in the DB
+        public static List<string> AppendIdsFromComboBoxes(List<string> comboBoxData, List<string> dataForRecord) {
+            comboBoxData.Reverse();
+            List<string> sqlExpressions = new() {
+                $"SELECT id FROM AutonMerkki WHERE merkki='{comboBoxData[0]}'",
+                $"SELECT id FROM AutonMallit WHERE auton_mallin_nimi='{comboBoxData[1]}'",
+                $"SELECT id FROM Varit WHERE varin_nimi='{comboBoxData[2]}'",
+                $"SELECT id FROM Polttoaine WHERE polttoaineen_nimi='{comboBoxData[3]}'"
+            };
+
+            dataForRecord.Reverse();
+            for (int i = 0; i < sqlExpressions.Count; i++) {
+                dataForRecord.Add(GetId(sqlExpressions[i]));
+            }
+
+            return dataForRecord;
+        }
+
+        public static IDictionary<string, string> GetSqlExpression(string merkki = "") {
+            IDictionary<string, string> sqlExpressions = new Dictionary<string, string> {
+                { "polttoaine", "SELECT polttoaineen_nimi FROM polttoaine ORDER BY polttoaineen_nimi" },
+                { "varit", "SELECT varin_nimi FROM varit ORDER BY varin_nimi" },
+                { "autonmallit", $"SELECT auton_mallin_nimi FROM autonmallit WHERE autonmerkkiid=(SELECT id FROM AutonMerkki WHERE merkki='{merkki}') ORDER BY auton_mallin_nimi" },
+                { "autonmerkki", "SELECT merkki FROM autonmerkki ORDER BY merkki" }
+            };
+            return sqlExpressions;
+        }
+
+        public static List<Property> GetBrandRecords() {
+            Property element = new Brand();
+            List<Property> properties = new();
+            string sqlExpression = "SELECT merkki FROM autonmerkki ORDER BY merkki";
             using SqlConnection connection = new(connectionString);
             connection.Open();
             SqlCommand command = new(sqlExpression, connection);
             SqlDataReader reader = command.ExecuteReader();
             while (reader.Read()) {
-                prop = prop.PropertyCreator();
-                prop.Nimi = (string)reader[0];
-                properties.Add(prop);
+                element = element.PropertyCreator();
+                element.Nimi = (string)reader[0];
+                properties.Add(element);
             }
             return properties;
         }
-    }
 
-    public class DatabaseController {
-        readonly static string connectionString = @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=Autokauppa;Integrated Security=True;";
+        public static List<Property> GetModelsRecords(string brand) {
+            Property element = new Model();
+            List<Property> properties = new();
+            string sqlExpression = $"SELECT auton_mallin_nimi FROM autonmallit WHERE autonmerkkiid=(SELECT id FROM AutonMerkki WHERE merkki='{brand}') ORDER BY auton_mallin_nimi";
+            using SqlConnection connection = new(connectionString);
+            connection.Open();
+            SqlCommand command = new(sqlExpression, connection);
+            SqlDataReader reader = command.ExecuteReader();
+            while (reader.Read()) {
+                element = element.PropertyCreator();
+                element.Nimi = (string)reader[0];
+                properties.Add(element);
+            }
+            return properties;
+        }
 
-        public DatabaseController() { }
-        
+        public static List<Property> GetColourRecords() {
+            Property element = new Colour();
+            List<Property> properties = new();
+            string sqlExpression = "SELECT varin_nimi FROM varit ORDER BY varin_nimi";
+            using SqlConnection connection = new(connectionString);
+            connection.Open();
+            SqlCommand command = new(sqlExpression, connection);
+            SqlDataReader reader = command.ExecuteReader();
+            while (reader.Read()) {
+                element = element.PropertyCreator();
+                element.Nimi = (string)reader[0];
+                properties.Add(element);
+            }
+            return properties;
+        }
 
-        public int CountRecords() {                // Count the amount of all records in DB
+        public static List<Property> GetGasRecords() {
+            Property element = new Gas();
+            List<Property> properties = new();
+            string sqlExpression = "SELECT polttoaineen_nimi FROM polttoaine ORDER BY polttoaineen_nimi";
+            using SqlConnection connection = new(connectionString);
+            connection.Open();
+            SqlCommand command = new(sqlExpression, connection);
+            SqlDataReader reader = command.ExecuteReader();
+            while (reader.Read()) {
+                element = element.PropertyCreator();
+                element.Nimi = (string)reader[0];
+                properties.Add(element);
+            }
+            return properties;
+        }
+
+        public static int CountAllRecords() {
             int allRecords = 0;
             using SqlConnection connection = new(connectionString);
             string sqlExpression = "SELECT COUNT(*) FROM Auto";
@@ -40,10 +110,8 @@ namespace Autokauppa.model {
             }
             return allRecords;
         }
-
         
-
-        public void LoadCars(DataGridView dataGrid, int record) {               // Get rows from the DB one by one
+        public static void LoadCars(DataGridView dataGrid, int record) {
             using SqlConnection connection = new(connectionString);
             SqlDataAdapter adapter = new($"SELECT * FROM Auto ORDER BY hinta, autonmerkkiid OFFSET {record} ROWS FETCH NEXT 1 ROWS ONLY", connection);
             DataSet dataSet = new();
@@ -51,10 +119,9 @@ namespace Autokauppa.model {
             adapter.Fill(dataSet, "Auto");
             dataGrid.DataSource = dataSet;
             dataGrid.DataMember = "Auto";
-        }
-        
+        }        
 
-        public string GetId(string sqlExpression) {                 // Convert text from comno boxes to ids
+        public static string GetId(string sqlExpression) {
             using SqlConnection connection = new(connectionString);            
             connection.Open();
             SqlCommand command = new(sqlExpression, connection);
@@ -64,11 +131,8 @@ namespace Autokauppa.model {
             }
             return "not found";
         }
-       
 
-        //Insert data into DB
-
-        public void InsertCar(Car car) {
+        public static void InsertRecord(Car car) {
             using SqlConnection connection = new(connectionString);
             SqlCommand command = new($"INSERT INTO Auto (mittarilukema) VALUES(@mittarilukema); SET @id=SCOPE_IDENTITY()", connection);
             connection.Open();
@@ -82,32 +146,36 @@ namespace Autokauppa.model {
             command.ExecuteNonQuery();
             int id = int.Parse(idParam.Value.ToString());
             car.SetId(id);          // assign id property to car object 
-            UpdateCar(car, id);         // update the row after we know the id
+            UpdateRecord(car, id);         // update the row after we know the id
         }
 
-        private void UpdateCar(Car car, int id) {
-            System.Reflection.PropertyInfo[] properties = car.GetType().GetProperties();
+        private static void UpdateRecord(Car carRecord, int id) {
+            System.Reflection.PropertyInfo[] properties = carRecord.GetType().GetProperties();
             using SqlConnection connection = new(connectionString);
             connection.Open();
-            foreach (System.Reflection.PropertyInfo property in properties) {       // add all other car's properties' values into DB one by one             
+            foreach (System.Reflection.PropertyInfo property in properties) {    
                 SqlCommand command2 = new($"UPDATE Auto SET {property.Name} = @{property.Name} WHERE id=@id", connection);
                 command2.Parameters.Add("@id", SqlDbType.Int).Value = id;
-                command2.Parameters.AddWithValue($"@{property.Name}", property.GetValue(car));
+                command2.Parameters.AddWithValue($"@{property.Name}", property.GetValue(carRecord));
                 command2.ExecuteNonQuery();
             }
         }
 
-
-
-        //Delete data from DB
-
-        public void DeleteCar(DataGridView dataGrid) {
+        public static void DeleteRecord(int id) {
             string sqlexpression = "DELETE FROM Auto WHERE id=@id";
             using SqlConnection connection = new(connectionString);
             SqlCommand command = new(sqlexpression, connection);
             connection.Open();
-            command.Parameters.Add("@id", SqlDbType.Int).Value = int.Parse(dataGrid.SelectedRows[0].Cells[0].Value.ToString());
+            command.Parameters.Add("@id", SqlDbType.Int).Value = id;
             command.ExecuteNonQuery();
+        }
+
+        public static string TestConnection() {
+            SqlConnection connection = new(connectionString);
+            connection.Open();
+            string connectionStatus = (connection != null && connection.State == ConnectionState.Open) ? "Connection is lit!" : "You're done.";
+            connection.Close();
+            return connectionStatus;
         }
     }
 }
