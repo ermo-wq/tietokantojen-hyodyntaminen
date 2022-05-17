@@ -1,5 +1,5 @@
 ﻿namespace tietokantojen_hyodyntaminen_02 {
-    partial class Form1 {
+    partial class MainMenu {
         /// <summary>
         /// Required designer variable.
         /// </summary>
@@ -51,7 +51,7 @@
             this.button1 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
-            this.button4 = new System.Windows.Forms.Button();
+            this.clearButton = new System.Windows.Forms.Button();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
@@ -61,10 +61,10 @@
             this.insertButton.Location = new System.Drawing.Point(12, 358);
             this.insertButton.Name = "insertButton";
             this.insertButton.Size = new System.Drawing.Size(182, 37);
-            this.insertButton.TabIndex = 1;
+            this.insertButton.TabIndex = 8;
             this.insertButton.Text = "Lisää";
             this.insertButton.UseVisualStyleBackColor = true;
-            this.insertButton.Click += new System.EventHandler(this.InsertCar);
+            this.insertButton.Click += new System.EventHandler(this.InsertRecord);
             // 
             // menuStrip1
             // 
@@ -74,7 +74,7 @@
             this.aboutToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(945, 30);
+            this.menuStrip1.Size = new System.Drawing.Size(945, 28);
             this.menuStrip1.TabIndex = 2;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -83,7 +83,7 @@
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.exitToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-            this.fileToolStripMenuItem.Size = new System.Drawing.Size(46, 26);
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(46, 24);
             this.fileToolStripMenuItem.Text = "File";
             // 
             // exitToolStripMenuItem
@@ -99,7 +99,7 @@
             this.testConnectionToolStrip,
             this.authorInfoStrip});
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(64, 26);
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(64, 24);
             this.aboutToolStripMenuItem.Text = "About";
             // 
             // testConnectionToolStrip
@@ -122,7 +122,7 @@
             this.mittarilukemaTextBox.Multiline = true;
             this.mittarilukemaTextBox.Name = "mittarilukemaTextBox";
             this.mittarilukemaTextBox.Size = new System.Drawing.Size(157, 33);
-            this.mittarilukemaTextBox.TabIndex = 3;
+            this.mittarilukemaTextBox.TabIndex = 0;
             // 
             // label1
             // 
@@ -140,7 +140,7 @@
             this.moottorinTilavuusTextBox.Multiline = true;
             this.moottorinTilavuusTextBox.Name = "moottorinTilavuusTextBox";
             this.moottorinTilavuusTextBox.Size = new System.Drawing.Size(157, 33);
-            this.moottorinTilavuusTextBox.TabIndex = 5;
+            this.moottorinTilavuusTextBox.TabIndex = 1;
             // 
             // hintaTextBox
             // 
@@ -148,7 +148,7 @@
             this.hintaTextBox.Multiline = true;
             this.hintaTextBox.Name = "hintaTextBox";
             this.hintaTextBox.Size = new System.Drawing.Size(157, 33);
-            this.hintaTextBox.TabIndex = 6;
+            this.hintaTextBox.TabIndex = 2;
             // 
             // label2
             // 
@@ -176,7 +176,7 @@
             this.merkkiComboBox.Location = new System.Drawing.Point(12, 186);
             this.merkkiComboBox.Name = "merkkiComboBox";
             this.merkkiComboBox.Size = new System.Drawing.Size(156, 24);
-            this.merkkiComboBox.TabIndex = 9;
+            this.merkkiComboBox.TabIndex = 3;
             this.merkkiComboBox.DropDown += new System.EventHandler(this.LoadCarBrands);
             // 
             // label4
@@ -195,7 +195,7 @@
             this.malliComboBox.Location = new System.Drawing.Point(12, 216);
             this.malliComboBox.Name = "malliComboBox";
             this.malliComboBox.Size = new System.Drawing.Size(156, 24);
-            this.malliComboBox.TabIndex = 11;
+            this.malliComboBox.TabIndex = 4;
             this.malliComboBox.DropDown += new System.EventHandler(this.LoadCarModels);
             // 
             // label5
@@ -214,7 +214,7 @@
             this.dateTimePicker1.Location = new System.Drawing.Point(12, 303);
             this.dateTimePicker1.Name = "dateTimePicker1";
             this.dateTimePicker1.Size = new System.Drawing.Size(259, 22);
-            this.dateTimePicker1.TabIndex = 13;
+            this.dateTimePicker1.TabIndex = 7;
             // 
             // label6
             // 
@@ -231,10 +231,10 @@
             this.deleteButton.Location = new System.Drawing.Point(12, 401);
             this.deleteButton.Name = "deleteButton";
             this.deleteButton.Size = new System.Drawing.Size(182, 37);
-            this.deleteButton.TabIndex = 15;
+            this.deleteButton.TabIndex = 9;
             this.deleteButton.Text = "Poista";
             this.deleteButton.UseVisualStyleBackColor = true;
-            this.deleteButton.Click += new System.EventHandler(this.DeleteCar);
+            this.deleteButton.Click += new System.EventHandler(this.DeleteRecord);
             // 
             // variComboBox
             // 
@@ -242,7 +242,7 @@
             this.variComboBox.Location = new System.Drawing.Point(268, 186);
             this.variComboBox.Name = "variComboBox";
             this.variComboBox.Size = new System.Drawing.Size(156, 24);
-            this.variComboBox.TabIndex = 16;
+            this.variComboBox.TabIndex = 5;
             this.variComboBox.DropDown += new System.EventHandler(this.LoadColours);
             // 
             // polttoaineComboBox
@@ -251,7 +251,7 @@
             this.polttoaineComboBox.Location = new System.Drawing.Point(268, 216);
             this.polttoaineComboBox.Name = "polttoaineComboBox";
             this.polttoaineComboBox.Size = new System.Drawing.Size(156, 24);
-            this.polttoaineComboBox.TabIndex = 17;
+            this.polttoaineComboBox.TabIndex = 6;
             this.polttoaineComboBox.DropDown += new System.EventHandler(this.LoadGas);
             // 
             // label7
@@ -284,13 +284,14 @@
             this.dataGridView1.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dataGridView1.Size = new System.Drawing.Size(391, 131);
             this.dataGridView1.TabIndex = 20;
+            this.dataGridView1.TabStop = false;
             // 
             // button1
             // 
             this.button1.Location = new System.Drawing.Point(542, 168);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(182, 37);
-            this.button1.TabIndex = 21;
+            this.button1.TabIndex = 12;
             this.button1.Text = "Edellinen";
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.PreviousRecord);
@@ -300,7 +301,7 @@
             this.button2.Location = new System.Drawing.Point(751, 168);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(182, 37);
-            this.button2.TabIndex = 22;
+            this.button2.TabIndex = 13;
             this.button2.Text = "Seuraava";
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.NextRecord);
@@ -310,27 +311,27 @@
             this.button3.Location = new System.Drawing.Point(200, 358);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(182, 37);
-            this.button3.TabIndex = 23;
+            this.button3.TabIndex = 10;
             this.button3.Text = "Hae";
             this.button3.UseVisualStyleBackColor = true;
-            this.button3.Click += new System.EventHandler(this.LoadCars);
+            this.button3.Click += new System.EventHandler(this.ShowRecords);
             // 
-            // button4
+            // clearButton
             // 
-            this.button4.Location = new System.Drawing.Point(200, 401);
-            this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(182, 37);
-            this.button4.TabIndex = 24;
-            this.button4.Text = "Tyhjää ";
-            this.button4.UseVisualStyleBackColor = true;
-            this.button4.Click += new System.EventHandler(this.ClearFields);
+            this.clearButton.Location = new System.Drawing.Point(200, 401);
+            this.clearButton.Name = "clearButton";
+            this.clearButton.Size = new System.Drawing.Size(182, 37);
+            this.clearButton.TabIndex = 11;
+            this.clearButton.Text = "Tyhjää ";
+            this.clearButton.UseVisualStyleBackColor = true;
+            this.clearButton.Click += new System.EventHandler(this.ClearAllFields);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(945, 450);
-            this.Controls.Add(this.button4);
+            this.Controls.Add(this.clearButton);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.button1);
@@ -393,7 +394,7 @@
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Button button3;
-        private System.Windows.Forms.Button button4;
+        private System.Windows.Forms.Button clearButton;
         private System.Windows.Forms.ToolStripMenuItem authorInfoStrip;
     }
 }
