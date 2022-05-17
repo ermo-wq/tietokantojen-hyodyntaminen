@@ -1,5 +1,4 @@
 ﻿using System.Data;
-using System.Windows.Forms;
 using System.Data.SqlClient;
 using System.Collections.Generic;
 
@@ -72,14 +71,13 @@ namespace Autokauppa.Model {
             return properties;
         }
         
-        public static void GetAllRecords(DataGridView dataGrid, int record) {
+        public static DataSet GetAllRecords(int record) {
             using SqlConnection connection = new(connectionString);
             SqlDataAdapter adapter = new($"SELECT * FROM Auto ORDER BY hinta, autonmerkkiid OFFSET {record} ROWS FETCH NEXT 1 ROWS ONLY", connection);
             DataSet dataSet = new();
             connection.Open();
             adapter.Fill(dataSet, "Auto");
-            dataGrid.DataSource = dataSet;
-            dataGrid.DataMember = "Auto";
+            return dataSet;            
         }        
 
         public static List<string> AppendIdsFromComboBoxes(List<string> comboBoxData, List<string> dataForRecord) {

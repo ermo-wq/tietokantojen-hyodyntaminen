@@ -17,13 +17,15 @@ namespace tietokantojen_hyodyntaminen_02 {
         private void NextRecord(object sender, EventArgs e) {
             record += 1;
             record = (record > Controller.CountAllRecords() - 1) ? 0 : record;
-            Controller.ShowAllRecords(dataGridView1, record);
+            dataGridView1.DataSource = Controller.ShowAllRecords(record);
+            dataGridView1.DataMember = "Auto";
         }
 
         private void PreviousRecord(object sender, EventArgs e) {
             record -= 1;
             record = (record < 0) ? Controller.CountAllRecords() - 1 : record;
-            Controller.ShowAllRecords(dataGridView1, record);
+            dataGridView1.DataSource = Controller.ShowAllRecords(record);
+            dataGridView1.DataMember = "Auto";
         }
 
         private void AddElementsToComboBoxes(ComboBox comboBox, List<Property> objects) {
@@ -57,7 +59,8 @@ namespace tietokantojen_hyodyntaminen_02 {
         }
 
         private void ShowRecords(object sender, EventArgs e) {
-            ViewController.GetAllRecords(dataGridView1, record);
+            dataGridView1.DataSource = Controller.ShowAllRecords(record);
+            dataGridView1.DataMember = "Auto";
             Console.WriteLine($"Current record: {record}, Amount of records: {Controller.CountAllRecords()}.");
         }    
         
