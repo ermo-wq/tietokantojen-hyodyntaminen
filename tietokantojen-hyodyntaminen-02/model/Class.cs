@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Autokauppa.Model {
     public abstract class Property {            // abstract class for all car's properties
@@ -71,8 +72,25 @@ namespace Autokauppa.Model {
             ID = value;
         }
 
-        public int GetId() {
-            return ID;
+        public static Car AssignProperties(List<string> dataForNewRecord) {
+            Car car = new();
+            System.Reflection.PropertyInfo[] properties = car.GetType().GetProperties();
+
+            for(int i = 0; i < properties.Length; i++) {
+                switch (Type.GetTypeCode(properties[i].PropertyType)) {
+                    case TypeCode.Int32:
+                        properties[i].SetValue(car, int.Parse(dataForNewRecord[i]));
+                        break;
+                    case TypeCode.Decimal:
+                        properties[i].SetValue(car, decimal.Parse(dataForNewRecord[i]));
+                        break;
+                    case TypeCode.DateTime:
+                        properties[i].SetValue(car, DateTime.Parse(dataForNewRecord[i]));
+                        break;
+                }
+            }
+
+            return car;
         }
     }
 }

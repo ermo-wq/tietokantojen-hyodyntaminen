@@ -41,28 +41,8 @@ namespace Autokauppa.Controller {
             ViewController.GetAllRecords(dataGrid, record);
         }
 
-
         public static Car AssignProperties(List<string> comboBoxData, List<string> dataForRecord) {
-            int i = 0;
-            Car car = new();
-            List<string> dataForNewRecord = GetDataForNewRecord(comboBoxData, dataForRecord);
-
-            System.Reflection.PropertyInfo[] properties = car.GetType().GetProperties();
-            foreach (System.Reflection.PropertyInfo property in properties) {
-                switch (Type.GetTypeCode(property.PropertyType)) {
-                    case TypeCode.Int32:
-                        property.SetValue(car, int.Parse(dataForNewRecord[i]));
-                        break;
-                    case TypeCode.Decimal:
-                        property.SetValue(car, decimal.Parse(dataForNewRecord[i]));
-                        break;
-                    case TypeCode.DateTime:
-                        property.SetValue(car, DateTime.Parse(dataForNewRecord[i]));
-                        break;
-                }
-                i++;
-            }
-
+            Car car = Car.AssignProperties(GetDataForNewRecord(comboBoxData, dataForRecord));
             return car;
         }
 
