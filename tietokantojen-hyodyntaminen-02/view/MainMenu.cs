@@ -1,7 +1,7 @@
 ﻿using System;
-using Autokauppa.model;
+using Autokauppa.Model;
 using System.Windows.Forms;
-using Autokauppa.controller;
+using Autokauppa.Controller;
 using System.Collections.Generic;
 
 namespace tietokantojen_hyodyntaminen_02 {
@@ -16,14 +16,14 @@ namespace tietokantojen_hyodyntaminen_02 {
 
         private void NextRecord(object sender, EventArgs e) {
             record += 1;
-            record = (record > DatabaseController.CountAllRecords() - 1) ? 0 : record;
-            DatabaseController.LoadCars(dataGridView1, record);
+            record = (record > Controller.CountAllRecords() - 1) ? 0 : record;
+            Controller.ShowAllRecords(dataGridView1, record);
         }
 
         private void PreviousRecord(object sender, EventArgs e) {
             record -= 1;
-            record = (record < 0) ? DatabaseController.CountAllRecords() - 1 : record;
-            DatabaseController.LoadCars(dataGridView1, record);
+            record = (record < 0) ? Controller.CountAllRecords() - 1 : record;
+            Controller.ShowAllRecords(dataGridView1, record);
         }
 
         private void AddElementsToComboBoxes(ComboBox comboBox, List<Property> objects) {
@@ -57,23 +57,61 @@ namespace tietokantojen_hyodyntaminen_02 {
         }
 
         private void ShowRecords(object sender, EventArgs e) {
-            DatabaseController.LoadCars(dataGridView1, record);
-            Console.WriteLine($"Current record: {record}, Amount of records: {DatabaseController.CountAllRecords()}.");
+            ViewController.GetAllRecords(dataGridView1, record);
+            Console.WriteLine($"Current record: {record}, Amount of records: {Controller.CountAllRecords()}.");
         }    
         
+
         // DB related methods
 
         private void InsertRecord(object sender, EventArgs e) {
-            if(InputValidation()) DatabaseController.InsertRecord(Controller.AssignProperties(new Car(), Controls));
+            if (InputValidation()) {
+                Controller.InsertNewRecord(GetComboBoxData(), GetDataForRecord());
+            }
+            Console.WriteLine("Successfully inserted 1 row");
         }
 
         private void DeleteRecord(object sender, EventArgs e) {
-            DatabaseController.DeleteRecord(int.Parse(dataGridView1.SelectedRows[0].Cells[0].Value.ToString()));
+            Controller.DeleteRecord(int.Parse(dataGridView1.SelectedRows[0].Cells[0].Value.ToString()));
             Console.WriteLine("Successfully deleted 1 row.");
         }
 
         private void TestConnection(object sender, EventArgs e) {  
-            MessageBox.Show(DatabaseController.TestConnection(), "Connection state");
+            MessageBox.Show(Controller.TestConnection(), "Connection state");
+        }
+        
+
+        // get data from controls
+
+        public List<string> GetComboBoxData() {
+            List<string> comboBoxData = new();
+
+            foreach (Control control in Controls) {
+                switch (control) {
+                    case ComboBox:
+                        comboBoxData.Add((control as ComboBox).SelectedItem.ToString());
+                        break;
+                }
+            }
+
+            return comboBoxData;
+        }
+
+        public List<string> GetDataForRecord() {
+            List<string> dataForRecord = new();
+
+            foreach (Control control in Controls) {
+                switch (control) {
+                    case TextBox:
+                        dataForRecord.Add((control as TextBox).Text);
+                        break;
+                    case DateTimePicker:
+                        dataForRecord.Add((control as DateTimePicker).Value.ToShortDateString());
+                        break;
+                }
+            }
+
+            return dataForRecord;
         }
 
 
@@ -83,10 +121,10 @@ namespace tietokantojen_hyodyntaminen_02 {
             foreach (Control control in Controls) {
                 switch (control) {
                     case TextBox:
-                        if(!ValidateTextBox(control)) return false;
+                        if (!ValidateTextBox(control)) return false;
                         break;
                     case ComboBox:
-                        if(!ValidateComboBox(control)) return false;
+                        if (!ValidateComboBox(control)) return false;
                         break;
                 }
             }
@@ -118,7 +156,8 @@ namespace tietokantojen_hyodyntaminen_02 {
             return true;
         }
 
-        // other
+
+        // form controls
 
         private void ClearAllFields(object sender, EventArgs e) {
             foreach (Control control in Controls) {
@@ -136,11 +175,9 @@ namespace tietokantojen_hyodyntaminen_02 {
             }
         }
 
-
         private void AuthorInfo(object sender, EventArgs e) {
             MessageBox.Show("Tietokantojen hyödyntäminen\n (C) 2022 Petri Raatikainen \n Vera Ermolaeva", "Tietoja tekijästä");
         }
-
 
         private void Exit(object sender, EventArgs e) {
             Application.Exit();

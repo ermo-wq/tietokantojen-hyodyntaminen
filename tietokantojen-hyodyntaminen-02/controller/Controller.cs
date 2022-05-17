@@ -1,53 +1,53 @@
 ﻿using System;
-using Autokauppa.model;
+using Autokauppa.Model;
 using System.Windows.Forms;
 using System.Collections.Generic;
 
-namespace Autokauppa.controller {
+namespace Autokauppa.Controller {
     public static class Controller {
         public static List<Property> GetGas() {
-            return DatabaseController.GetGasRecords();
+            return ViewController.GetGasRecords();
         }
 
         public static List<Property> GetColours() {
-            return DatabaseController.GetColourRecords();
+            return ViewController.GetColourRecords();
         }
 
         public static List<Property> GetBrands() {
-            return DatabaseController.GetBrandRecords();
+            return ViewController.GetBrandRecords();
         }
 
         public static List<Property> GetModels(string brand) {
-            return DatabaseController.GetColumnRecords(DatabaseController.GetSqlExpression(brand)["autonmallit"], new Model());
+            return ViewController.GetModelRecords(brand);
         }
 
-        public static List<string> GetDataForNewRecord(Control.ControlCollection controls) {
-            List<string> dataForRecord = new();
-            List<string> comboBoxData = new();
-
-            foreach (Control control in controls) {
-                switch (control) {
-                    case TextBox:
-                        dataForRecord.Add((control as TextBox).Text);
-                        break;
-                    case ComboBox:
-                        comboBoxData.Add((control as ComboBox).SelectedItem.ToString());
-                        break;
-                    case DateTimePicker:
-                        dataForRecord.Add((control as DateTimePicker).Value.ToShortDateString());
-                        break;
-                }
-            }
-
-            dataForRecord = DatabaseController.AppendIdsFromComboBoxes(comboBoxData, dataForRecord);            
-            return dataForRecord;
+        public static int CountAllRecords() {
+            return DatabaseController.CountAllRecords();
         }
 
-        public static Car AssignProperties(Car car, Control.ControlCollection controls) {
+        public static void InsertNewRecord(List<string> comboBoxData, List<string> dataForRecord) {
+            DatabaseController.InsertRecord(AssignProperties(comboBoxData, dataForRecord));
+        }
+
+        public static void DeleteRecord(int id) {
+            DatabaseController.DeleteRecord(id);
+        }
+
+        public static string TestConnection() {
+            return DatabaseController.TestConnection();
+        }
+
+        public static void ShowAllRecords(DataGridView dataGrid, int record) {
+            ViewController.GetAllRecords(dataGrid, record);
+        }
+
+
+        public static Car AssignProperties(List<string> comboBoxData, List<string> dataForRecord) {
             int i = 0;
-            List<string> dataForNewRecord = GetDataForNewRecord(controls);
-            
-            System.Reflection.PropertyInfo[] properties = car.GetType().GetProperties();   
+            Car car = new();
+            List<string> dataForNewRecord = GetDataForNewRecord(comboBoxData, dataForRecord);
+
+            System.Reflection.PropertyInfo[] properties = car.GetType().GetProperties();
             foreach (System.Reflection.PropertyInfo property in properties) {
                 switch (Type.GetTypeCode(property.PropertyType)) {
                     case TypeCode.Int32:
@@ -61,10 +61,14 @@ namespace Autokauppa.controller {
                         break;
                 }
                 i++;
-                Console.WriteLine("{0}={1}", property.Name, property.GetValue(car));
             }
 
             return car;
+        }
+
+        public static List<string> GetDataForNewRecord(List<string> comboBoxData, List<string> dataForRecord) {
+            dataForRecord = ViewController.AppendIdsFromComboBoxes(comboBoxData, dataForRecord);
+            return dataForRecord;
         }
     }
 }

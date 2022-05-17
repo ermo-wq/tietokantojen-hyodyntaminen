@@ -1,9 +1,9 @@
 ﻿using System;
 
-namespace Autokauppa.model {
+namespace Autokauppa.Model {
     public abstract class Property {            // abstract class for all car's properties
         public string Nimi { get; set; }
-        public abstract Property PropertyCreator();        
+        public abstract Property CreateNew();        
     }
 
     public class Gas : Property {        
@@ -14,7 +14,7 @@ namespace Autokauppa.model {
             set { Nimi = value; }
         }
 
-        public override Property PropertyCreator() {
+        public override Property CreateNew() {
             return new Gas();
         }
     }
@@ -26,7 +26,7 @@ namespace Autokauppa.model {
             set { Nimi = value; }
         }
 
-        public override Property PropertyCreator() {
+        public override Property CreateNew() {
             return new Colour();
         }
     }
@@ -38,7 +38,7 @@ namespace Autokauppa.model {
             set { Nimi = value; }
         }
 
-        public override Property PropertyCreator() {
+        public override Property CreateNew() {
             return new Brand();
         }
     }
@@ -51,7 +51,7 @@ namespace Autokauppa.model {
         }
         public string AutonMerkkiID { get; set; }
 
-        public override Property PropertyCreator() {
+        public override Property CreateNew() {
             return new Model();
         }
     }
